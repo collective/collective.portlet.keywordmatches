@@ -1,13 +1,19 @@
-from zope.interface import Interface
-
 from zope.interface import implements
+from zope import schema
+from zope.formlib import form
+from zope.component import getMultiAdapter
 
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.app.portlets.portlets import base
+from plone.app.portlets.cache import render_cachekey
+from plone.memoize import ram
+from plone.memoize.compress import xhtml_compress
+from plone.memoize.instance import memoize
 
-from zope import schema
-from zope.formlib import form
+from Acquisition import aq_inner
+
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.CMFCore.utils import getToolByName
 
 from collective.portlet.keywordmatches import KeywordMatchesMessageFactory as _
 
@@ -18,15 +24,19 @@ class IKeywordMatches(IPortletDataProvider):
     data that is being rendered and the portlet assignment itself are the
     same.
     """
+    
+    count = schema.Int(title=_(u'Number of related items to display'),
+                       description=_(u'How many related items to list.'),
+                       required=True,
+                       default=5)
 
-    # TODO: Add any zope.schema fields here to capture portlet configuration
-    # information. Alternatively, if there are no settings, leave this as an
-    # empty interface - see also notes around the add form and edit form
-    # below.
-
-    # some_field = schema.TextLine(title=_(u"Some field"),
-    #                              description=_(u"A field to use"),
-    #                              required=True)
+    state = schema.Tuple(title=_(u"Workflow state"),
+                         description=_(u"Items in which workflow state to show."),
+                         default=('published', ),
+                         required=True,
+                         value_type=schema.Choice(
+                             vocabulary="plone.app.vocabularies.WorkflowStates")
+                         )
 
 
 class Assignment(base.Assignment):
@@ -38,16 +48,9 @@ class Assignment(base.Assignment):
 
     implements(IKeywordMatches)
 
-    # TODO: Set default values for the configurable parameters here
-
-    # some_field = u""
-
-    # TODO: Add keyword parameters for configurable parameters here
-    # def __init__(self, some_field=u""):
-    #    self.some_field = some_field
-
-    def __init__(self):
-        pass
+    def __init__(self, count=5, state=('published', )):
+        self.count = count
+        self.state = state
 
     @property
     def title(self):
@@ -63,11 +66,47 @@ class Renderer(base.Renderer):
     rendered, and the implicit variable 'view' will refer to an instance
     of this class. Other methods can be added and referenced in the template.
     """
+    
+    #render = ViewPageTemplateFile('keywordmatches.pt')
+    _template = ViewPageTemplateFile('keywordmatches.pt')
 
-    render = ViewPageTemplateFile('keywordmatches.pt')
+    @ram.cache(render_cachekey)
+    def render(self):
+        return xhtml_compress(self._template())
 
-# NOTE: If this portlet does not have any configurable parameters, you can
-# inherit from NullAddForm and remove the form_fields variable.
+    @property
+    def available(self):
+        return len(self._data())
+
+    def getRelatedItems(self):
+        return self._data()
+
+    def getAllRelatedItemsLink(self):
+        portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
+        portal_url = portal_state.portal_url()
+        
+        context = aq_inner(self.context)
+        keywords = context.Subject()
+        url = '%s/search?' % portal_url
+        if type(keywords) is str:
+            url = '%sSubject=%s' % (url, keywords)
+        else:
+            for keyword in keywords:
+                url = '%sSubject:list=%s&' % (url, keyword)
+        return url
+
+    @memoize
+    def _data(self):
+        context = aq_inner(self.context)
+        keywords = context.Subject()
+        catalog = getToolByName(context, 'portal_catalog')
+        limit = self.data.count
+        state = self.data.state
+        return catalog(Subject=keywords,
+                       review_state=state,
+                       sort_on='Date',
+                       sort_order='reverse',
+                       sort_limit=limit)[:limit]
 
 class AddForm(base.AddForm):
     """Portlet add form.
@@ -77,9 +116,11 @@ class AddForm(base.AddForm):
     constructs the assignment that is being added.
     """
     form_fields = form.Fields(IKeywordMatches)
+    label = _(u"Add Related Items Portlet")
+    description = _(u"This portlet displays recent Related Items based on keywords matches.")
 
     def create(self, data):
-        return Assignment(**data)
+        return Assignment(count=data.get('count', 5), state=data.get('state', ('published',)))
 
 # NOTE: IF this portlet does not have any configurable parameters, you can
 # remove this class definition and delete the editview attribute from the
@@ -92,3 +133,5 @@ class EditForm(base.EditForm):
     zope.formlib which fields to display.
     """
     form_fields = form.Fields(IKeywordMatches)
+    label = _(u"Edit Related Items Portlet")
+    description = _(u"This portlet displays recent Related Items based on keywords matches.")

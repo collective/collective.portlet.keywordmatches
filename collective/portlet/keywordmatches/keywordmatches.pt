@@ -4,19 +4,26 @@
     <dt class="portletHeader">
         <span class="portletTopLeft"></span>
         <span>
-           Header
+           Related Items
         </span>
         <span class="portletTopRight"></span>
     </dt>
 
-    <dd class="portletItem odd">
-        Body text
+    <dd class="portletItem odd"
+        tal:define="related_items view/getRelatedItems">
+        <tal:rep repeat="item related_items">
+          <tal:cond condition="python:item.getPath()!= ('/').join(context.getPhysicalPath())">
+            <a href=""
+               tal:attributes="href item/getURL"
+               tal:content="item/Title" /><br />
+          </tal:cond>
+        </tal:rep>
     </dd>
 
     <dd class="portletFooter">
         <span class="portletBotomLeft"></span>
         <span>
-           Footer
+           <a href="" tal:attributes="href view/getAllRelatedItemsLink">more ...</a>
         </span>
         <span class="portletBottomRight"></span>
     </dd>
