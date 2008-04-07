@@ -99,14 +99,17 @@ class Renderer(base.Renderer):
     def _data(self):
         context = aq_inner(self.context)
         keywords = context.Subject()
+        here_path = ('/').join(context.getPhysicalPath())
         catalog = getToolByName(context, 'portal_catalog')
         limit = self.data.count
         state = self.data.state
-        return catalog(Subject=keywords,
+        extra_limit = limit + 1
+        results = catalog(Subject=keywords,
                        review_state=state,
                        sort_on='Date',
                        sort_order='reverse',
-                       sort_limit=limit)[:limit]
+                       sort_limit=extra_limit)
+        return [res for res in results if res.getPath() != here_path][:limit]
 
 class AddForm(base.AddForm):
     """Portlet add form.
