@@ -1,12 +1,21 @@
+import os
 from setuptools import setup, find_packages
 
-version = '0.4'
+version = '0.5'
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+)
 
 setup(name='collective.portlet.keywordmatches',
       version=version,
-      description="",
-      long_description="""\
-""",
+      description="A Plone portlet to display items with similar keywords",
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Framework :: Plone",

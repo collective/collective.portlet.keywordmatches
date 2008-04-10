@@ -1,0 +1,23 @@
+Change History
+==============
+
+0.5 unreleased
+--------------
+
+- A dash of PEP 8
+  [claytron]
+
+- Added more options to the portlet
+  [claytron]
+
+0.3 Unreleased
+--------------
+
+- Initial code creation
+  [lucielejard]
+
+0.1 Unreleased
+--------------
+
+- Initial package structure.
+  [zopeskel]

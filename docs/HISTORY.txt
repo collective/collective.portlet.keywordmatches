@@ -1,8 +1,0 @@
-Changelog for collective.portlet.keywordmatches
-
-    (name of developer listed in brackets)
-
-collective.portlet.keywordmatches - 0.1 Unreleased
-
-    - Initial package structure.
-      [zopeskel]
