@@ -17,7 +17,7 @@ count
 states
     The workflow states the items must be in to be shown in the portlet.
 
-portal_types
+allowed_types
     The allowed types to be shown in the portlet and the 'more...' link search
 
 show_all_types

@@ -51,7 +51,7 @@ class IKeywordMatches(IPortletDataProvider):
         )
     )
 
-    portal_types = schema.Tuple(
+    allowed_types = schema.Tuple(
         title=_(u"Allowed Types"),
         description=_(u"Select the content types that should be shown."),
         default=DEFAULT_ALLOWED_TYPES,
@@ -81,11 +81,11 @@ class Assignment(base.Assignment):
     def __init__(self, 
                  count=5,
                  states=('published',),
-                 portal_types=DEFAULT_ALLOWED_TYPES,
+                 allowed_types=DEFAULT_ALLOWED_TYPES,
                  show_all_types=False):
         self.count = count
         self.states = states
-        self.portal_types = portal_types
+        self.allowed_types = allowed_types
         self.show_all_types = show_all_types
 
     @property
@@ -138,7 +138,7 @@ class Renderer(base.Renderer):
         limit = self.data.count
         # increase by one since we'll get the current item
         extra_limit = limit + 1
-        results = catalog(portal_type=self.data.portal_types,
+        results = catalog(portal_type=self.data.allowed_types,
                           Subject=keywords,
                           review_state=self.data.states,
                           sort_on='Date',
@@ -161,7 +161,7 @@ class AddForm(base.AddForm):
     def create(self, data):
         return Assignment(count=data.get('count', 5),
                           states=data.get('states', ('published',)),
-                          portal_types=data.get('portal_types', 
+                          allowed_types=data.get('allowed_types', 
                                                 DEFAULT_ALLOWED_TYPES),
                           show_all_types=data.get('show_all_types', False))
 

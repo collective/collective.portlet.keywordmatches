@@ -1,6 +1,12 @@
 Change History
 ==============
 
+0.6 unreleased
+--------------
+
+- ill named variable (portal_types) caused edit screen to crash
+  [claytron]
+
 0.5 unreleased
 --------------
 
