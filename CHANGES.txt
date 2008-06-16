@@ -4,6 +4,9 @@ Change History
 0.6 unreleased
 --------------
 
+- added portaltype icons based on portlet news
+  hpeter at agitator dot com
+
 - ill named variable (portal_types) caused edit screen to crash
   [claytron]
 

@@ -10,11 +10,27 @@
     </dt>
 
     <dd class="portletItem odd"
-        tal:define="related_items view/getRelatedItems">
+        tal:define="related_items view/getRelatedItems;
+                                plone_view context/@@plone;
+                                getIcon nocall:plone_view/getIcon;"
+                    >
         <tal:rep repeat="item related_items">
           <a href=""
-             tal:attributes="href item/getURL"
-             tal:content="item/Title" /><br />
+             tal:define="item_icon python:getIcon(item);"
+             tal:attributes="href item/getURL;
+                             title item/Description">
+                               
+	            <img tal:replace="structure item_icon/html_tag" />
+	            <span tal:content="item/Title"></span>
+            
+          </a>
+          <br/>
+             
+
+             
+             
+             
+             
         </tal:rep>
     </dd>
 
