@@ -1,6 +1,14 @@
 Change History
 ==============
 
+1.0
+---
+
+- initial release to the cheeseshop
+
+- fix up the portlet so that it follows the plone convention
+  [claytron]
+
 0.6 unreleased
 --------------
 
