@@ -124,7 +124,7 @@ class Renderer(base.Renderer):
         # make_query renders tuples literally, so let's make it a list
         req_items['Subject'] = list(context.Subject())
         if not self.data.show_all_types:
-            req_items['portal_type'] = self.data.portal_types
+            req_items['portal_type'] = list(self.data.allowed_types)
         return '%s/search?%s' % (portal_url, make_query(req_items))
 
     @memoize
