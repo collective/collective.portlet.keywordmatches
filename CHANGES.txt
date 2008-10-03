@@ -1,6 +1,14 @@
 Change History
 ==============
 
+1.2 (2008-10-02)
+----------------
+
+- Fixed the 'more...' link so that it doesn't show when all the
+  possible results are already in the portlet.  If 'show all types'
+  is checked then the 'more...' link will always show.
+  [claytron]
+
 1.1 (2008-10-02)
 ----------------
 

@@ -115,6 +115,18 @@ class Renderer(base.Renderer):
     def getRelatedItems(self):
         return self._data()
 
+    @property
+    def showRelatedItemsLink(self):
+        """Determine if the 'more...' link needs to be displayed
+        """
+        # if the more link is for all types then always show it
+        if self.data.show_all_types:
+            return True
+        # if we have more results than are shown, show the more link
+        elif len(self.all_results) > self.data.count:
+            return True
+        return False
+
     def getAllRelatedItemsLink(self):
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
@@ -144,7 +156,9 @@ class Renderer(base.Renderer):
                           sort_on='Date',
                           sort_order='reverse',
                           sort_limit=extra_limit)
-        return [res for res in results if res.getPath() != here_path][:limit]
+        # filter out the current item
+        self.all_results = [res for res in results if res.getPath() != here_path]
+        return self.all_results[:limit]
 
 class AddForm(base.AddForm):
     """Portlet add form.

@@ -26,7 +26,8 @@
         </dd>
     </tal:rep>
 
-    <dd class="portletFooter">
+    <dd class="portletFooter"
+        tal:condition="view/showRelatedItemsLink">
         <span class="portletBotomLeft"></span>
         <span>
            <a href="" tal:attributes="href view/getAllRelatedItemsLink" i18n:translate="link_more">more ...</a>
