@@ -1,6 +1,15 @@
 Change History
 ==============
 
+1.1 (2008-10-02)
+----------------
+
+- Fixed up i18n and added Czech localization
+  [naro]
+
+- Fixed "more..." link portal_type list
+  [naro]
+
 1.0
 ---
 
@@ -38,3 +47,4 @@ Change History
 
 - Initial package structure.
   [zopeskel]
+
