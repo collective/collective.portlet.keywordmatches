@@ -9,6 +9,9 @@ Change History
   is checked then the 'more...' link will always show.
   [claytron]
 
+- Add Dutch translation [WouterVH]
+
+
 1.1 (2008-10-02)
 ----------------
 
