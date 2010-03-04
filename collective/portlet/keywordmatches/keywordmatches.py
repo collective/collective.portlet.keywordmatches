@@ -26,6 +26,7 @@ DEFAULT_ALLOWED_TYPES = (
     'Image',
 )
 
+
 class IKeywordMatches(IPortletDataProvider):
     """A portlet
 
@@ -33,13 +34,13 @@ class IKeywordMatches(IPortletDataProvider):
     data that is being rendered and the portlet assignment itself are the
     same.
     """
-    
+
     count = schema.Int(
         title=_(u'Number of related items to display'),
         description=_(u'How many related items to list.'),
         required=True,
-        default=5
-    )
+        default=5,
+        )
 
     states = schema.Tuple(
         title=_(u"Workflow state"),
@@ -48,8 +49,8 @@ class IKeywordMatches(IPortletDataProvider):
         required=True,
         value_type=schema.Choice(
             vocabulary="plone.app.vocabularies.WorkflowStates"
+            )
         )
-    )
 
     allowed_types = schema.Tuple(
         title=_(u"Allowed Types"),
@@ -58,16 +59,17 @@ class IKeywordMatches(IPortletDataProvider):
         required=True,
         value_type=schema.Choice(
             vocabulary="plone.app.vocabularies.ReallyUserFriendlyTypes"
+            )
         )
-    )
-    
+
     show_all_types = schema.Bool(
         title=_(u"Show all types in 'more' link"),
         description=_(u"If selected, the 'more' link will display "
                        "results from all content types instead of "
                        "restricting to the 'Allowed Types'."),
         default=False,
-    )
+        )
+
 
 class Assignment(base.Assignment):
     """Portlet assignment.
@@ -78,9 +80,9 @@ class Assignment(base.Assignment):
 
     implements(IKeywordMatches)
 
-    def __init__(self, 
+    def __init__(self,
                  count=5,
-                 states=('published',),
+                 states=('published', ),
                  allowed_types=DEFAULT_ALLOWED_TYPES,
                  show_all_types=False):
         self.count = count
@@ -94,6 +96,7 @@ class Assignment(base.Assignment):
         "manage portlets" screen.
         """
         return "Keyword Matches"
+
 
 class Renderer(base.Renderer):
     """Portlet renderer.
@@ -130,7 +133,7 @@ class Renderer(base.Renderer):
     def getAllRelatedItemsLink(self):
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
-        portal_url = portal_state.portal_url()        
+        portal_url = portal_state.portal_url()
         context = aq_inner(self.context)
         req_items = {}
         # make_query renders tuples literally, so let's make it a list
@@ -160,6 +163,7 @@ class Renderer(base.Renderer):
         self.all_results = [res for res in results if res.getPath() != here_path]
         return self.all_results[:limit]
 
+
 class AddForm(base.AddForm):
     """Portlet add form.
 
@@ -174,10 +178,11 @@ class AddForm(base.AddForm):
 
     def create(self, data):
         return Assignment(count=data.get('count', 5),
-                          states=data.get('states', ('published',)),
-                          allowed_types=data.get('allowed_types', 
+                          states=data.get('states', ('published', )),
+                          allowed_types=data.get('allowed_types',
                                                 DEFAULT_ALLOWED_TYPES),
                           show_all_types=data.get('show_all_types', False))
+
 
 class EditForm(base.EditForm):
     """Portlet edit form.

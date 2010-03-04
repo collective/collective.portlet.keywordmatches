@@ -12,10 +12,11 @@ from collective.portlet.keywordmatches import keywordmatches
 
 from collective.portlet.keywordmatches.tests.base import TestCase
 
+
 class TestPortlet(TestCase):
 
     def afterSetUp(self):
-        self.setRoles(('Manager',))
+        self.setRoles(('Manager', ))
 
     def test_portlet_type_registered(self):
         portlet = getUtility(IPortletType, name='collective.portlet.keywordmatches.KeywordMatches')
@@ -40,8 +41,8 @@ class TestPortlet(TestCase):
         self.assertEquals(len(mapping), 1)
         self.failUnless(isinstance(mapping.values()[0], keywordmatches.Assignment))
 
-    # NOTE: This test can be removed if the portlet has no edit form
     def test_invoke_edit_view(self):
+        # NOTE: This test can be removed if the portlet has no edit form
         mapping = PortletAssignmentMapping()
         request = self.folder.REQUEST
 
@@ -61,10 +62,11 @@ class TestPortlet(TestCase):
         renderer = getMultiAdapter((context, request, view, manager, assignment), IPortletRenderer)
         self.failUnless(isinstance(renderer, keywordmatches.Renderer))
 
+
 class TestRenderer(TestCase):
 
     def afterSetUp(self):
-        self.setRoles(('Manager',))
+        self.setRoles(('Manager', ))
 
     def renderer(self, context=None, request=None, view=None, manager=None, assignment=None):
         context = context or self.folder
@@ -83,6 +85,7 @@ class TestRenderer(TestCase):
         r.update()
         output = r.render()
         # TODO: Test output
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
